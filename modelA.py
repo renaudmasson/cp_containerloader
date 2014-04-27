@@ -152,9 +152,9 @@ def buildAndSolveModel(instance):
   solution.Add(zDestination)
 
   var = []
-  orderedGroups = [(order[i],i) for i in range(len(length))]
-  orderedGroups.sort()
-  for (gp,i) in orderedGroups:
+  orderedGroups = [(order[i],length[i]*width[i],i) for i in range(len(length))]
+  orderedGroups.sort(reverse=True)
+  for (gp,dummy,i) in orderedGroups:
     var.append(xOrigin[i])
     var.append(xDestination[i])
     var.append(yOrigin[i])

@@ -102,6 +102,17 @@ def forceOrder(solver, xOrigin, xDestination, yOrigin, yDestination, zOrigin, zD
         ci5 = zOrigin[j] >= zDestination[i] # ci4 && ci5 Sufficient condition
         solver.Add(ci1 + ci2 + ci3 + (ci4*ci5) >= 1)
 
+def breakSymmetries(solver, xOrigin, xDestination, yOrigin, yDestination, zOrigin, zDestination, groups, length, width, height):
+  for i in range(len(length)):
+    for j in range(i+1,len(length)):
+      if groups[i] == groups[j] and length[i] == length[j] and width[i] == width[j] and height[i] == height[j]:
+        ci1 = xOrigin[i] < xOrigin[j]
+        ci2 = xOrigin[i] == xOrigin[j]
+        ci3 = yOrigin[i] < yOrigin[j]
+        ci4 = yOrigin[i] == yOrigin[j]
+        ci5 = zOrigin[i] < zOrigin[j]
+        solver.Add(ci1 + (ci2*ci3) + (ci2*ci4*ci5) >= 1) 
+
 # Parse the instance
 #
 # Parameters:
@@ -142,6 +153,8 @@ def buildAndSolveModel(instance):
   noIntersection(solver,xOrigin,xDestination,yOrigin,yDestination,zOrigin,zDestination)  
   onSurface(solver,xOrigin,xDestination,yOrigin,yDestination,zOrigin,zDestination)
   forceOrder(solver, xOrigin, xDestination, yOrigin, yDestination, zOrigin, zDestination, order)
+  breakSymmetries(solver, xOrigin, xDestination, yOrigin, yDestination, zOrigin, zDestination, order, length, width, height)
+
 
   solution = solver.Assignment()
   solution.Add(xOrigin)
